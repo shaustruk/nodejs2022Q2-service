@@ -70,3 +70,7 @@ npm run format
 Press <kbd>F5</kbd> to debug.
 
 For more information, visit: https://code.visualstudio.com/docs/editor/debugging
+
+//test
+npm run test -- favorites.e2e-spec.ts
+npm run test -- users.e2e-spec.ts

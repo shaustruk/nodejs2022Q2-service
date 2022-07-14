@@ -11,21 +11,24 @@ import { CreateUserDto } from './dto/user.dto';
 export class UserService {
   private users: User[] = [];
   private version = 1;
-  user: User;
+  private user: User;
   async findAll(): Promise<User[]> {
+    this.users.forEach((user) => delete user.password);
     return this.users;
   }
 
   async findOne(id: string): Promise<User> {
+    if (!uuidValidate(id)) {
+      throw new BadRequestException("User id isn't valid");
+    }
     const user: User = this.users.find((user) => user.id === id);
-
     if (!user) {
       throw new NotFoundException('User not found');
-    } else if (!uuidValidate(id)) {
-      throw new BadRequestException("User id isn't valid");
-    } else return user;
+    }
+    const copyUser = { ...user };
+    delete user.password;
+    return user;
   }
-
   async create(userDTO: CreateUserDto) {
     // if the title is already in use by another post
     // if (userDTO) {
@@ -40,7 +43,7 @@ export class UserService {
       createAt: +new Date(),
     };
     const updatedAt = {
-      updatedAt: 13,
+      updatedAt: +new Date(),
     };
 
     // }
