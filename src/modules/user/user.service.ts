@@ -5,7 +5,7 @@ import {
   NotFoundException,
 } from '@nestjs/common';
 import { User } from './user.model';
-import { validate as uuidValidate, v4 as uuidv4, version } from 'uuid';
+import { validate as uuidValidate, v4 as uuidv4 } from 'uuid';
 import { CreateUserDto, UpdateUserDto } from './dto/user.dto';
 
 @Injectable()
@@ -31,6 +31,7 @@ export class UserService {
     delete user.password;
     return user;
   }
+
   async create(userDTO: CreateUserDto) {
     const id = uuidv4();
     const createdAt = +new Date();
