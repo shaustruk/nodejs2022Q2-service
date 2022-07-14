@@ -1,17 +1,19 @@
 import {
   BadRequestException,
+  ForbiddenException,
   Injectable,
   NotFoundException,
 } from '@nestjs/common';
 import { User } from './user.model';
 import { validate as uuidValidate, v4 as uuidv4, version } from 'uuid';
-import { CreateUserDto } from './dto/user.dto';
+import { CreateUserDto, UpdateUserDto } from './dto/user.dto';
 
 @Injectable()
 export class UserService {
   private users: User[] = [];
   private version = 1;
-  private user: User;
+  private updateAt = 0;
+
   async findAll(): Promise<User[]> {
     this.users.forEach((user) => delete user.password);
     return this.users;
@@ -25,42 +27,73 @@ export class UserService {
     if (!user) {
       throw new NotFoundException('User not found');
     }
-    const copyUser = { ...user };
+
     delete user.password;
     return user;
   }
   async create(userDTO: CreateUserDto) {
-    // if the title is already in use by another post
-    // if (userDTO) {
-    const id = {
-      id: uuidv4(),
-    };
-    const userVersion = {
-      version: this.version++,
-    };
-
-    const createdAt = {
-      createAt: +new Date(),
-    };
-    const updatedAt = {
-      updatedAt: +new Date(),
-    };
-
-    // }
-    console.log(id, userVersion, createdAt);
-    // this.user = Object.assign(this.user, userDTO);
-    // console.log(this.user);
-    // this.users.push(this.user);
-    const user = Object.assign(
-      {},
-      userDTO,
+    const id = uuidv4();
+    const createdAt = +new Date();
+    const updatedAt = this.updateAt === 0 ? +new Date() : this.updateAt;
+    const version = this.version;
+    const newUser: User = {
       id,
-      userVersion,
+      ...userDTO,
+      version,
       createdAt,
       updatedAt,
-    );
-    console.log(user);
-    this.users.push(user);
-    return this.user;
+    };
+    this.users.push(newUser);
+    const copyUser = { ...newUser };
+    delete copyUser.password;
+    return copyUser;
+  }
+
+  async delete(id: string) {
+    if (!uuidValidate(id)) {
+      console.log(id);
+      throw new BadRequestException("User id isn't valid");
+    }
+    const index: number = this.users.findIndex((user) => user.id === id);
+
+    // -1 is returned when no findIndex() match is found
+    if (index === -1) {
+      throw new NotFoundException('User not found');
+    }
+    this.users.splice(index, 1);
+  }
+
+  async update(id: string, updateDTO: UpdateUserDto) {
+    if (!uuidValidate(id)) {
+      throw new BadRequestException("User id isn't valid");
+    }
+    const user: User = this.users.find((user, i) => user.id === id);
+    // -1 is returned when no findIndex() match is found
+    if (!user) {
+      throw new NotFoundException('User not found');
+    }
+    const userIndex: number = this.users.findIndex((user) => user.id === id);
+    if (updateDTO.oldPassword !== user.password) {
+      throw new ForbiddenException('Old password is wrong');
+    }
+
+    const createdAt = this.users[userIndex].createdAt;
+    const login = this.users[userIndex].login;
+    const updatedAt = +new Date();
+    const version = this.users[userIndex].version + 1;
+    const password = updateDTO.newPassword;
+    const updatedUser: User = {
+      id,
+      login,
+      version,
+      createdAt,
+      updatedAt,
+      password,
+    };
+
+    this.users[userIndex] = updatedUser;
+    const copyUser = { ...updatedUser };
+    delete copyUser.password;
+    return copyUser;
   }
 }

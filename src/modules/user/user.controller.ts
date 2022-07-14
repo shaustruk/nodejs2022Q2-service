@@ -1,5 +1,15 @@
-import { Body, Controller, Get, HttpCode, Param, Post } from '@nestjs/common';
-import { CreateUserDto } from './dto/user.dto';
+import {
+  Body,
+  Controller,
+  Delete,
+  Get,
+  HttpCode,
+  Param,
+  ParseIntPipe,
+  Post,
+  Put,
+} from '@nestjs/common';
+import { CreateUserDto, UpdateUserDto } from './dto/user.dto';
 import { User } from './user.model';
 import { UserService } from './user.service';
 
@@ -10,26 +20,30 @@ export class UserController {
   @Get()
   @HttpCode(200)
   async findAll(): Promise<User[]> {
-    return this.userService.findAll();
+    return await this.userService.findAll();
   }
 
   @Get(':id')
   @HttpCode(200)
   async findOne(@Param('id') id: string): Promise<User> {
-    return this.userService.findOne(id);
+    return await this.userService.findOne(id);
   }
 
   @Post()
   @HttpCode(201)
   async createUser(@Body() createUser: CreateUserDto): Promise<User> {
-    return this.userService.create(createUser);
+    return await this.userService.create(createUser);
   }
 
-  // @Delete()
-  // @HttpCode(204)
-  // async deleteUser() {}
+  @Delete(':id')
+  @HttpCode(204)
+  async deleteUser(@Param('id') id: string) {
+    return await this.userService.delete(id);
+  }
 
-  // @Put('')
-  // @HttpCode(200)
-  // async updateUser() {}
+  @Put(':id')
+  @HttpCode(200)
+  async updateUser(@Param('id') id: string, @Body() updateUser: UpdateUserDto) {
+    return await this.userService.update(id, updateUser);
+  }
 }
