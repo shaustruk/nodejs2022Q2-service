@@ -77,3 +77,4 @@ npm run test -- favorites.e2e-spec.ts
 npm run test -- users.e2e-spec.ts
 npm run test -- artists.e2e-spec.ts
 npm run test -- albums.e2e-spec.ts
+npm run test -- tracks.e2e-spec.ts

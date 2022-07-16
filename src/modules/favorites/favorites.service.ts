@@ -1,21 +1,36 @@
 import {
   BadRequestException,
+  forwardRef,
+  Inject,
   Injectable,
   NotFoundException,
 } from '@nestjs/common';
 import { Favorites } from './favorites.model';
 import { validate as valid, v4 as uuidv4 } from 'uuid';
+import { ArtistService } from '../artist/artist.service';
+import { AlbumService } from '../album/album.service';
+import { TrackService } from '../track/track.service';
 
 @Injectable()
 export class FavoritesService {
-  private favorites: Favorites = {
+  constructor(
+    @Inject(forwardRef(() => ArtistService))
+    private artistsService: ArtistService,
+
+    @Inject(forwardRef(() => AlbumService))
+    private albumService: AlbumService,
+    @Inject(forwardRef(() => TrackService))
+    private trackService: TrackService,
+  ) {}
+
+  private static favorites: Favorites = {
     artists: ([] = []),
     albums: ([] = []),
     tracks: ([] = []),
   };
 
   async findAll(): Promise<Favorites> {
-    return this.favorites;
+    return FavoritesService.favorites;
   }
 
   //   async create(createFavoritesDTO: CreateFavoritesDTO) {

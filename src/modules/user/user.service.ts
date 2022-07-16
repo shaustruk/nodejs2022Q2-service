@@ -10,20 +10,20 @@ import { CreateUserDto, UpdateUserDto } from './dto/user.dto';
 
 @Injectable()
 export class UserService {
-  private users: User[] = [];
+  private static users: User[] = [];
   private version = 1;
   private updateAt = 0;
 
   async findAll(): Promise<User[]> {
-    this.users.forEach((user) => delete user.password);
-    return this.users;
+    UserService.users.forEach((user) => delete user.password);
+    return UserService.users;
   }
 
   async findOne(id: string): Promise<User> {
     if (!uuidValidate(id)) {
       throw new BadRequestException("User id isn't valid");
     }
-    const user: User = this.users.find((user) => user.id === id);
+    const user: User = UserService.users.find((user) => user.id === id);
     if (!user) {
       throw new NotFoundException('User not found');
     }
@@ -44,7 +44,7 @@ export class UserService {
       createdAt,
       updatedAt,
     };
-    this.users.push(newUser);
+    UserService.users.push(newUser);
     const copyUser = { ...newUser };
     delete copyUser.password;
     return copyUser;
@@ -55,33 +55,35 @@ export class UserService {
       console.log(id);
       throw new BadRequestException("User id isn't valid");
     }
-    const index: number = this.users.findIndex((user) => user.id === id);
+    const index: number = UserService.users.findIndex((user) => user.id === id);
 
     // -1 is returned when no findIndex() match is found
     if (index === -1) {
       throw new NotFoundException('User not found');
     }
-    this.users.splice(index, 1);
+    UserService.users.splice(index, 1);
   }
 
   async update(id: string, updateDTO: UpdateUserDto) {
     if (!uuidValidate(id)) {
       throw new BadRequestException("User id isn't valid");
     }
-    const user: User = this.users.find((user, i) => user.id === id);
+    const user: User = UserService.users.find((user, i) => user.id === id);
     // -1 is returned when no findIndex() match is found
     if (!user) {
       throw new NotFoundException('User not found');
     }
-    const userIndex: number = this.users.findIndex((user) => user.id === id);
+    const userIndex: number = UserService.users.findIndex(
+      (user) => user.id === id,
+    );
     if (updateDTO.oldPassword !== user.password) {
       throw new ForbiddenException('Old password is wrong');
     }
 
-    const createdAt = this.users[userIndex].createdAt;
-    const login = this.users[userIndex].login;
+    const createdAt = UserService.users[userIndex].createdAt;
+    const login = UserService.users[userIndex].login;
     const updatedAt = +new Date();
-    const version = this.users[userIndex].version + 1;
+    const version = UserService.users[userIndex].version + 1;
     const password = updateDTO.newPassword;
     const updatedUser: User = {
       id,
@@ -92,7 +94,7 @@ export class UserService {
       password,
     };
 
-    this.users[userIndex] = updatedUser;
+    UserService.users[userIndex] = updatedUser;
     const copyUser = { ...updatedUser };
     delete copyUser.password;
     return copyUser;

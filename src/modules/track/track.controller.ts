@@ -10,7 +10,7 @@ import {
 } from '@nestjs/common';
 import { CreateUserDto, UpdateUserDto } from '../user/dto/user.dto';
 import { User } from '../user/user.model';
-import { CreateTrackDTO, UpdateTrackDTO } from './dto/track.dto';
+import { TrackDTO } from './dto/track.dto';
 import { Track } from './track.model';
 import { TrackService } from './track.service';
 
@@ -32,7 +32,7 @@ export class TrackController {
 
   @Post()
   @HttpCode(201)
-  async create(@Body() createTrack: CreateTrackDTO): Promise<Track> {
+  async create(@Body() createTrack: TrackDTO): Promise<Track> {
     return await this.trackService.create(createTrack);
   }
 
@@ -44,7 +44,7 @@ export class TrackController {
 
   @Put(':id')
   @HttpCode(200)
-  async update(@Param('id') id: string, @Body() updateTrack: UpdateTrackDTO) {
+  async update(@Param('id') id: string, @Body() updateTrack: TrackDTO) {
     return await this.trackService.update(id, updateTrack);
   }
 }

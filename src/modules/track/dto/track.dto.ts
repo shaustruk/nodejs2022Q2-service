@@ -1,25 +1,28 @@
-import { IsNotEmpty, IsString, IsBoolean } from 'class-validator';
+import {
+  IsNotEmpty,
+  IsNumber,
+  IsOptional,
+  IsString,
+  IsUUID,
+} from 'class-validator';
 
-export class CreateTrackDTO {
+export class TrackDTO {
   @IsNotEmpty()
   @IsString()
   readonly name: string;
 
-  @IsNotEmpty()
+  @IsOptional()
+  @IsUUID()
   @IsString()
   readonly artistId: string | null;
 
-  @IsNotEmpty()
+  @IsOptional()
+  @IsUUID()
   @IsString()
   readonly albumId: string | null;
 
+  @IsOptional()
   @IsNotEmpty()
-  @IsString()
-  readonly duration: number;
-}
-
-export class UpdateTrackDTO {
-  @IsNotEmpty()
-  @IsString()
+  @IsNumber()
   readonly duration: number;
 }

@@ -1,4 +1,10 @@
-import { IsNotEmpty, IsNumber, IsString } from 'class-validator';
+import {
+  IsNotEmpty,
+  IsNumber,
+  IsOptional,
+  IsString,
+  IsUUID,
+} from 'class-validator';
 
 export class AlbumDTO {
   @IsNotEmpty()
@@ -9,7 +15,7 @@ export class AlbumDTO {
   @IsNumber()
   readonly year: number;
 
-  @IsNotEmpty()
-  @IsString()
-  readonly artistId: string;
+  @IsOptional()
+  @IsUUID()
+  readonly artistId: string | null;
 }
