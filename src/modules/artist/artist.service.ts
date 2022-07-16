@@ -7,11 +7,20 @@ import {
 } from '@nestjs/common';
 import { Artist } from './artist.model';
 import { validate as uuidValidate, v4 as uuidv4 } from 'uuid';
-import { ArtistDTO } from './dto/artist.dto';
 import { AlbumService } from '../album/album.service';
+import { TrackService } from '../track/track.service';
+import { CreteArtistDTO } from './dto/create-artist.dto';
+import { UpdateArtistDto } from './dto/update-artist.dto';
 
 @Injectable()
 export class ArtistService {
+  constructor(
+    @Inject(forwardRef(() => AlbumService))
+    private albumService: AlbumService,
+    @Inject(forwardRef(() => TrackService))
+    private trackService: TrackService,
+  ) {}
+
   private static artists: Artist[] = [];
   private grammy: boolean;
 
@@ -33,7 +42,7 @@ export class ArtistService {
     return artist;
   }
 
-  async create(artistDTO: ArtistDTO) {
+  async create(artistDTO: CreteArtistDTO) {
     const id = uuidv4();
     const newArtist: Artist = {
       id,
@@ -55,10 +64,27 @@ export class ArtistService {
     if (index === -1) {
       throw new NotFoundException('Artist not found');
     }
-    ArtistService.artists[index].id = null;
+    ArtistService.artists.splice(index, 1);
+
+    //get arr of albums
+    const albums = this.albumService.findAll();
+    const tracks = this.trackService.findAll();
+    //get needed album
+    const album = (await albums).find(({ artistId }) => {
+      artistId === id;
+    });
+    const track = (await tracks).find(({ artistId }) => {
+      artistId === id;
+    });
+    if (album) {
+      await this.albumService.update(album.id, { artistId: null });
+    }
+    if (track) {
+      await this.trackService.update(track.id, { artistId: null });
+    }
   }
 
-  async update(id: string, updateDTO: ArtistDTO) {
+  async update(id: string, updateDTO: UpdateArtistDto) {
     if (!uuidValidate(id)) {
       throw new BadRequestException("Artist id isn't valid");
     }
@@ -73,7 +99,7 @@ export class ArtistService {
       (art) => art.id === id,
     );
 
-    const updatedArtist: Artist = {
+    const updatedArtist: any = {
       id,
       ...updateDTO,
     };

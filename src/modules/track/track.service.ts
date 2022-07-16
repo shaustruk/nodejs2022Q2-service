@@ -4,7 +4,8 @@ import {
   NotFoundException,
 } from '@nestjs/common';
 import { validate as valid, v4 as uuidv4 } from 'uuid';
-import { TrackDTO } from './dto/track.dto';
+import { CreateTrackDTO } from './dto/create-track.dto';
+import { UpdateTracktDto } from './dto/update-track.dto';
 import { Track } from './track.model';
 
 @Injectable()
@@ -27,7 +28,7 @@ export class TrackService {
     return track;
   }
 
-  async create(createTrackDTO: TrackDTO) {
+  async create(createTrackDTO: CreateTrackDTO) {
     const id = uuidv4();
     const newTrack: Track = {
       id,
@@ -49,10 +50,10 @@ export class TrackService {
     if (index === -1) {
       throw new NotFoundException('Track not found');
     }
-    TrackService.tracks[index].id = null;
+    TrackService.tracks.splice(index, 1);
   }
 
-  async update(id: string, updateDTO: TrackDTO) {
+  async update(id: string, updateDTO: UpdateTracktDto) {
     if (!valid(id)) {
       throw new BadRequestException("Track id isn't valid");
     }
@@ -64,8 +65,19 @@ export class TrackService {
     const trackIndex: number = TrackService.tracks.findIndex(
       (track) => track.id === id,
     );
-    track.duration = updateDTO.duration;
-
-    return track;
+    const name = updateDTO.name ? updateDTO.name : track.name;
+    const duration = updateDTO.duration ? updateDTO.duration : track.duration;
+    const albumId = updateDTO.albumId ? updateDTO.albumId : track.albumId;
+    const artistId = updateDTO.artistId ? updateDTO.artistId : track.artistId;
+    const updateTrack: Track = {
+      id,
+      name,
+      ...updateDTO,
+      duration,
+      albumId,
+      artistId,
+    };
+    TrackService.tracks[trackIndex] = updateTrack;
+    return updateTrack;
   }
 }

@@ -6,22 +6,19 @@ import {
   IsUUID,
 } from 'class-validator';
 
-export class TrackDTO {
+export class CreateTrackDTO {
   @IsNotEmpty()
   @IsString()
   readonly name: string;
 
   @IsOptional()
   @IsUUID()
-  @IsString()
   readonly artistId: string | null;
 
   @IsOptional()
   @IsUUID()
-  @IsString()
   readonly albumId: string | null;
 
-  @IsOptional()
   @IsNotEmpty()
   @IsNumber()
   readonly duration: number;

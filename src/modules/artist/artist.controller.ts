@@ -10,7 +10,8 @@ import {
 } from '@nestjs/common';
 import { Artist } from './artist.model';
 import { ArtistService } from './artist.service';
-import { ArtistDTO } from './dto/artist.dto';
+import { CreteArtistDTO } from './dto/create-artist.dto';
+import { UpdateArtistDto } from './dto/update-artist.dto';
 
 @Controller('artist')
 export class ArtistController {
@@ -30,7 +31,7 @@ export class ArtistController {
 
   @Post()
   @HttpCode(201)
-  async create(@Body() createArtist: ArtistDTO): Promise<Artist> {
+  async create(@Body() createArtist: CreteArtistDTO): Promise<Artist> {
     return await this.artistService.create(createArtist);
   }
 
@@ -42,7 +43,7 @@ export class ArtistController {
 
   @Put(':id')
   @HttpCode(200)
-  async update(@Param('id') id: string, @Body() updateArtist: ArtistDTO) {
+  async update(@Param('id') id: string, @Body() updateArtist: UpdateArtistDto) {
     return await this.artistService.update(id, updateArtist);
   }
 }

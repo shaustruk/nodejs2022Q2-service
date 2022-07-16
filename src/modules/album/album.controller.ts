@@ -10,7 +10,8 @@ import {
 } from '@nestjs/common';
 import { Album } from './album.model';
 import { AlbumService } from './album.service';
-import { AlbumDTO } from './dto/album.dto';
+import { CreateAlbumDTO } from './dto/album.dto';
+import { UpdateAlbumDto } from './dto/update-album.dto';
 
 @Controller('album')
 export class AlbumController {
@@ -30,7 +31,7 @@ export class AlbumController {
 
   @Post()
   @HttpCode(201)
-  async create(@Body() createalbum: AlbumDTO): Promise<Album> {
+  async create(@Body() createalbum: CreateAlbumDTO): Promise<Album> {
     return await this.albumService.create(createalbum);
   }
 
@@ -42,7 +43,7 @@ export class AlbumController {
 
   @Put(':id')
   @HttpCode(200)
-  async update(@Param('id') id: string, @Body() updatealbum: AlbumDTO) {
+  async update(@Param('id') id: string, @Body() updatealbum: UpdateAlbumDto) {
     return await this.albumService.update(id, updatealbum);
   }
 }

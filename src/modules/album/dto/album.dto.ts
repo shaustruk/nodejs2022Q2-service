@@ -6,7 +6,7 @@ import {
   IsUUID,
 } from 'class-validator';
 
-export class AlbumDTO {
+export class CreateAlbumDTO {
   @IsNotEmpty()
   @IsString()
   readonly name: string;

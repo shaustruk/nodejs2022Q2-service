@@ -9,7 +9,7 @@ import {
   Put,
 } from '@nestjs/common';
 import { FavoritesDTO } from './dto/favorites.dto';
-import { Favorites } from './favorites.model';
+import { EntityFavorites, Favorites } from './favorites.model';
 import { FavoritesService } from './favorites.service';
 
 @Controller('favs')
@@ -18,16 +18,27 @@ export class FavoritesController {
 
   @Get()
   @HttpCode(200)
-  async findAll(): Promise<Favorites> {
+  async findAll(): Promise<EntityFavorites> {
     return await this.favoritesService.findAll();
   }
 
-  // @Post()
-  // @HttpCode(201)
-  // async create(@Body() createFavorite: FavoritesDTO): Promise<Favorites> {
-  //   return await this.favoritesService.create(createFavorite);
-  // }
+  @Post('track/:id')
+  @HttpCode(201)
+  async createTrack(@Param('id') id: string) {
+    return await this.favoritesService.createTrack(id);
+  }
 
+  @Post('album/:id')
+  @HttpCode(201)
+  async createAlbum(@Param('id') id: string) {
+    return await this.favoritesService.createAlbum(id);
+  }
+
+  @Post('artist/:id')
+  @HttpCode(201)
+  async createArtist(@Param('id') id: string) {
+    return await this.favoritesService.createArtist(id);
+  }
   // @Delete(':id')
   // @HttpCode(204)
   // async delete(@Param('id') id: string) {

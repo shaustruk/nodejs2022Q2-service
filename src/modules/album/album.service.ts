@@ -7,12 +7,17 @@ import {
 } from '@nestjs/common';
 import { Album } from './album.model';
 import { validate as valid, v4 as uuidv4 } from 'uuid';
-import { AlbumDTO } from './dto/album.dto';
-import { ArtistService } from '../artist/artist.service';
+import { CreateAlbumDTO } from './dto/album.dto';
+import { UpdateAlbumDto } from './dto/update-album.dto';
+import { TrackService } from '../track/track.service';
 
 @Injectable()
 export class AlbumService {
-  constructor(private readonly artistsService: ArtistService) {}
+  constructor(
+    @Inject(forwardRef(() => TrackService))
+    private trackService: TrackService,
+  ) {}
+
   private static albums: Album[] = [];
 
   async findAll(): Promise<Album[]> {
@@ -31,7 +36,7 @@ export class AlbumService {
     return album;
   }
 
-  async create(albumDTO: AlbumDTO) {
+  async create(albumDTO: CreateAlbumDTO) {
     const id = uuidv4();
     const newAlbum: Album = {
       id,
@@ -53,11 +58,18 @@ export class AlbumService {
     if (index === -1) {
       throw new NotFoundException('Album not found');
     }
-    AlbumService.albums[index].id = null;
-    const artists = this.artistsService.findAll();
+    AlbumService.albums.splice(index, 1);
+
+    const tracks = await this.trackService.findAll();
+    const track = tracks.find(({ albumId }) => {
+      albumId === id;
+    });
+    if (track) {
+      await this.trackService.update(track.id, { albumId: null });
+    }
   }
 
-  async update(id: string, updateDTO: AlbumDTO) {
+  async update(id: string, updateDTO: UpdateAlbumDto) {
     if (!valid(id)) {
       throw new BadRequestException("Album id isn't valid");
     }
@@ -69,10 +81,15 @@ export class AlbumService {
     const albumIndex: number = AlbumService.albums.findIndex(
       (album) => album.id === id,
     );
-
+    const name = updateDTO.name ? updateDTO.name : album.name;
+    const year = updateDTO.year ? updateDTO.year : album.year;
+    const artistId = updateDTO.artistId ? updateDTO.artistId : album.artistId;
     const updatedAlbum: Album = {
       id,
+      name,
+      year,
       ...updateDTO,
+      artistId,
     };
 
     AlbumService.albums[albumIndex] = updatedAlbum;

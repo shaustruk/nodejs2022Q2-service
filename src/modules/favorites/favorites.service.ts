@@ -4,12 +4,15 @@ import {
   Inject,
   Injectable,
   NotFoundException,
+  UnprocessableEntityException,
 } from '@nestjs/common';
-import { Favorites } from './favorites.model';
+import { EntityFavorites, Favorites } from './favorites.model';
 import { validate as valid, v4 as uuidv4 } from 'uuid';
 import { ArtistService } from '../artist/artist.service';
 import { AlbumService } from '../album/album.service';
 import { TrackService } from '../track/track.service';
+import { FavoritesDTO } from './dto/favorites.dto';
+import { Track } from '../track/track.model';
 
 @Injectable()
 export class FavoritesService {
@@ -29,20 +32,51 @@ export class FavoritesService {
     tracks: ([] = []),
   };
 
-  async findAll(): Promise<Favorites> {
-    return FavoritesService.favorites;
+  async findAll(): Promise<EntityFavorites> {
+    const artists = await this.artistsService.findAll();
+    const albums = await this.albumService.findAll();
+    const tracks = await this.trackService.findAll();
+    return { artists, albums, tracks };
   }
 
-  //   async create(createFavoritesDTO: CreateFavoritesDTO) {
-  //     const id = uuidv4();
-  //     const newFavorites: Favorites = {
-  //       id,
-  //       ...createFavoritesDTO,
-  //     };
-  //     this.tracks.push(newFavorites);
-  //     return newFavorites;
-  //   }
+  async createTrack(id: string) {
+    if (!valid(id)) {
+      throw new BadRequestException("Track id isn't valid");
+    }
+    const tracks = this.trackService.findAll();
+    const track = (await tracks).find((track) => track.id === id);
+    if (!track) {
+      throw new UnprocessableEntityException('Track not found');
+    }
+    FavoritesService.favorites.tracks.push(id);
+    return id;
+  }
 
+  async createAlbum(id: string) {
+    if (!valid(id)) {
+      throw new BadRequestException("Album id isn't valid");
+    }
+    const albums = this.albumService.findAll();
+    const album = (await albums).find((album) => album.id === id);
+    if (!album) {
+      throw new UnprocessableEntityException('Album not found');
+    }
+    FavoritesService.favorites.albums.push(id);
+    return id;
+  }
+
+  async createArtist(id: string) {
+    if (!valid(id)) {
+      throw new BadRequestException("Artist id isn't valid");
+    }
+    const artists = this.artistsService.findAll();
+    const artist = (await artists).find((artist) => artist.id === id);
+    if (!artist) {
+      throw new UnprocessableEntityException('Artist not found');
+    }
+    FavoritesService.favorites.artists.push(id);
+    return id;
+  }
   //   async delete(id: string) {
   //     if (!valid(id)) {
   //       throw new BadRequestException("Favorites id isn't valid");
