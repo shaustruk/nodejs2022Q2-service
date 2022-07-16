@@ -33,9 +33,9 @@ After application running open new terminal and enter:
 
 #### To run all tests without authorization
 
-```
+
 #### npm run test
-```
+
 ```
 To run only one of all test suites
 ```
