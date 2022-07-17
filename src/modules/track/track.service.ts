@@ -62,11 +62,9 @@ export class TrackService {
     TrackService.tracks.splice(index, 1);
 
     //get all favorites tracks
-    const favorites = await this.favService.findAll();
-    const favTracks = favorites.tracks;
-    console.log(favTracks);
-    const track = favTracks.find((el) => {
-      el.id === id;
+    const favoritesTracks = (await this.favService.findAll()).tracks;
+    const track = favoritesTracks.find((tr) => {
+      tr.id === id;
     });
     if (track) {
       this.favService.deleteTrack(id);
