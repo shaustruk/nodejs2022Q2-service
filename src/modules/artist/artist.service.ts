@@ -25,7 +25,6 @@ export class ArtistService {
   ) {}
 
   private static artists: Artist[] = [];
-  private grammy: boolean;
 
   async findAll(): Promise<Artist[]> {
     return ArtistService.artists;
@@ -69,22 +68,19 @@ export class ArtistService {
     }
     ArtistService.artists.splice(index, 1);
 
-    //get arr of albums
-    const albums = this.albumService.findAll();
-    const tracks = this.trackService.findAll();
-    //get needed album
-    const album = (await albums).find(({ artistId }) => {
-      artistId === id;
-    });
-    const track = (await tracks).find(({ artistId }) => {
-      artistId === id;
-    });
-    if (album) {
-      await this.albumService.update(album.id, { artistId: null });
-    }
-    if (track) {
-      await this.trackService.update(track.id, { artistId: null });
-    }
+    //del artist from favArtists
+    const favoritesArtist = await this.favoriteService.findAll(),
+      favArtist = (await favoritesArtist).artists,
+      indexDelArt = favArtist.findIndex((el) => {
+        el.id === id;
+      });
+    favArtist.splice(indexDelArt, 1);
+
+    //del artistId from tracks=> null
+    this.trackService.setArtistIDisNull(id);
+
+    //del artistId from tracks=> null
+    this.trackService.setAlbumIDisNull(id);
   }
 
   async update(id: string, updateDTO: UpdateArtistDto) {

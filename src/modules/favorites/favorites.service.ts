@@ -11,10 +11,6 @@ import { validate as valid, v4 as uuidv4 } from 'uuid';
 import { ArtistService } from '../artist/artist.service';
 import { AlbumService } from '../album/album.service';
 import { TrackService } from '../track/track.service';
-import { FavoritesDTO } from './dto/favorites.dto';
-import { Track } from '../track/track.model';
-import { Album } from '../album/album.model';
-import { Artist } from '../artist/artist.model';
 
 @Injectable()
 export class FavoritesService {
@@ -33,34 +29,13 @@ export class FavoritesService {
     tracks: [],
   };
 
+  private static favoritesShow: EntityFavorites = {
+    artists: [],
+    albums: [],
+    tracks: [],
+  };
   async findAll(): Promise<EntityFavorites> {
-    const albums: Album[] = [];
-    const allAlbums: Promise<Album[]> = this.albumService.findAll();
-    (await allAlbums).forEach((alb) => {
-      FavoritesService.favorites.albums.forEach((id) => {
-        alb.id === id;
-        albums.push(alb);
-      });
-    });
-
-    const artists: Artist[] = [];
-    const allArtists: Promise<Artist[]> = this.artistsService.findAll();
-    (await allArtists).forEach((art) => {
-      FavoritesService.favorites.albums.forEach((id) => {
-        art.id === id;
-        artists.push(art);
-      });
-    });
-    const tracks: Track[] = [];
-    const allTracks: Promise<Track[]> = this.trackService.findAll();
-    (await allTracks).forEach((tr) => {
-      FavoritesService.favorites.tracks.forEach((id) => {
-        tr.id === id;
-        tracks.push(tr);
-      });
-    });
-
-    return { albums, tracks, artists };
+    return FavoritesService.favoritesShow;
   }
 
   async addIdTrack(id: string) {
@@ -73,6 +48,8 @@ export class FavoritesService {
       throw new UnprocessableEntityException('Track not found');
     }
     FavoritesService.favorites.tracks.push(id);
+    FavoritesService.favoritesShow.tracks.push(track);
+    console.log(FavoritesService.favorites.tracks);
     return id;
   }
 
@@ -86,6 +63,8 @@ export class FavoritesService {
       throw new UnprocessableEntityException('Album not found');
     }
     FavoritesService.favorites.albums.push(id);
+    FavoritesService.favoritesShow.albums.push(album);
+    console.log(FavoritesService.favorites.albums);
     return id;
   }
 
@@ -99,6 +78,8 @@ export class FavoritesService {
       throw new UnprocessableEntityException('Artist not found');
     }
     FavoritesService.favorites.artists.push(id);
+    FavoritesService.favoritesShow.artists.push(artist);
+    console.log(FavoritesService.favorites.artists);
     return id;
   }
 
@@ -106,37 +87,49 @@ export class FavoritesService {
     if (!valid(id)) {
       throw new BadRequestException("Track id isn't valid");
     }
-    const index = FavoritesService.favorites.tracks.indexOf(id);
+    let index = FavoritesService.favoritesShow.tracks.findIndex(
+      (el) => el.id === id,
+    );
+
     // -1 is returned when no findIndex() match is found
-    if (index === -1) {
+    if (!index) {
       throw new NotFoundException('Favorites not found');
     }
-    FavoritesService.favorites.tracks.splice(index, 1);
+    FavoritesService.favoritesShow.tracks.splice(index, 1);
+    FavoritesService.favorites.tracks =
+      FavoritesService.favorites.tracks.filter((el) => el !== id);
+    console.log(FavoritesService.favorites);
   }
 
   async deleteAlbum(id: string) {
     if (!valid(id)) {
       throw new BadRequestException("Album id isn't valid");
     }
-    const index = FavoritesService.favorites.albums.indexOf(id);
+    let index = FavoritesService.favoritesShow.albums.findIndex(
+      (el) => el.id === id,
+    );
     // -1 is returned when no findIndex() match is found
     if (index === -1) {
       throw new NotFoundException('Album not found');
     }
-    FavoritesService.favorites.albums.splice(index, 1);
+    FavoritesService.favoritesShow.albums.splice(index, 1);
+    FavoritesService.favorites.albums =
+      FavoritesService.favorites.albums.filter((el) => el !== id);
   }
 
   async deleteArtist(id: string) {
     if (!valid(id)) {
       throw new BadRequestException("Artist id isn't valid");
     }
-    const index = FavoritesService.favorites.artists.findIndex(
-      (artistId) => artistId === id,
+    let index = FavoritesService.favoritesShow.artists.findIndex(
+      (el) => el.id === id,
     );
     // -1 is returned when no findIndex() match is found
     if (index === -1) {
       throw new NotFoundException('Artist not found');
     }
-    FavoritesService.favorites.artists.splice(index, 1);
+    FavoritesService.favoritesShow.artists.splice(index, 1);
+    FavoritesService.favorites.artists =
+      FavoritesService.favorites.artists.filter((el) => el !== id);
   }
 }

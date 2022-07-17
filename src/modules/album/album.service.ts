@@ -63,19 +63,16 @@ export class AlbumService {
     }
     AlbumService.albums.splice(index, 1);
 
-    const tracks = await this.trackService.findAll();
-    const track = tracks.find(({ albumId }) => {
-      albumId === id;
-    });
-    if (track) {
-      await this.trackService.update(track.id, { albumId: null });
-    }
+    //del album from favAlbums
     const favoritesAlbums = this.favoritesService.findAll(),
       favAlbums = (await favoritesAlbums).albums,
       indexDelAlb = favAlbums.findIndex((el) => {
         el.id === id;
       });
     favAlbums.splice(indexDelAlb, 1);
+
+    //del almId from tracks
+    this.trackService.setAlbumIDisNull(id);
   }
 
   async update(id: string, updateDTO: UpdateAlbumDto) {

@@ -98,4 +98,22 @@ export class TrackService {
     TrackService.tracks[trackIndex] = updateTrack;
     return updateTrack;
   }
+
+  async setArtistIDisNull(id: string) {
+    TrackService.tracks = TrackService.tracks.map((track: Track) => {
+      return {
+        ...track,
+        artistId: track.artistId === id ? null : track.artistId,
+      };
+    });
+  }
+
+  async setAlbumIDisNull(id: string) {
+    TrackService.tracks = TrackService.tracks.map((track: Track) => {
+      return {
+        ...track,
+        albumId: track.albumId === id ? null : track.albumId,
+      };
+    });
+  }
 }
