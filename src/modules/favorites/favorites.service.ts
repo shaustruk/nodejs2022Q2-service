@@ -13,6 +13,8 @@ import { AlbumService } from '../album/album.service';
 import { TrackService } from '../track/track.service';
 import { FavoritesDTO } from './dto/favorites.dto';
 import { Track } from '../track/track.model';
+import { Album } from '../album/album.model';
+import { Artist } from '../artist/artist.model';
 
 @Injectable()
 export class FavoritesService {
@@ -26,24 +28,47 @@ export class FavoritesService {
   ) {}
 
   private static favorites: Favorites = {
-    artists: ([] = []),
-    albums: ([] = []),
-    tracks: ([] = []),
+    artists: [],
+    albums: [],
+    tracks: [],
   };
 
   async findAll(): Promise<EntityFavorites> {
-    const artists = await this.artistsService.findAll();
-    const albums = await this.albumService.findAll();
-    const tracks = await this.trackService.findAll();
-    return { artists, albums, tracks };
+    const albums: Album[] = [];
+    const allAlbums: Promise<Album[]> = this.albumService.findAll();
+    (await allAlbums).forEach((alb) => {
+      FavoritesService.favorites.albums.forEach((id) => {
+        alb.id === id;
+        albums.push(alb);
+      });
+    });
+
+    const artists: Artist[] = [];
+    const allArtists: Promise<Artist[]> = this.artistsService.findAll();
+    (await allArtists).forEach((art) => {
+      FavoritesService.favorites.albums.forEach((id) => {
+        art.id === id;
+        artists.push(art);
+      });
+    });
+    const tracks: Track[] = [];
+    const allTracks: Promise<Track[]> = this.trackService.findAll();
+    (await allTracks).forEach((tr) => {
+      FavoritesService.favorites.tracks.forEach((id) => {
+        tr.id === id;
+        tracks.push(tr);
+      });
+    });
+
+    return { albums, tracks, artists };
   }
 
-  async createTrack(id: string) {
+  async addIdTrack(id: string) {
     if (!valid(id)) {
       throw new BadRequestException("Track id isn't valid");
     }
-    const tracks = this.trackService.findAll();
-    const track = (await tracks).find((track) => track.id === id);
+    const tracks = await this.trackService.findAll();
+    const track = tracks.find((track) => track.id === id);
     if (!track) {
       throw new UnprocessableEntityException('Track not found');
     }
@@ -51,12 +76,12 @@ export class FavoritesService {
     return id;
   }
 
-  async createAlbum(id: string) {
+  async addIdAlbum(id: string) {
     if (!valid(id)) {
       throw new BadRequestException("Album id isn't valid");
     }
-    const albums = this.albumService.findAll();
-    const album = (await albums).find((album) => album.id === id);
+    const albums = await this.albumService.findAll();
+    const album = albums.find((album) => album.id === id);
     if (!album) {
       throw new UnprocessableEntityException('Album not found');
     }
@@ -64,18 +89,19 @@ export class FavoritesService {
     return id;
   }
 
-  async createArtist(id: string) {
+  async addIdArtist(id: string) {
     if (!valid(id)) {
       throw new BadRequestException("Artist id isn't valid");
     }
-    const artists = this.artistsService.findAll();
-    const artist = (await artists).find((artist) => artist.id === id);
+    const artists = await this.artistsService.findAll();
+    const artist = artists.find((artist) => artist.id === id);
     if (!artist) {
       throw new UnprocessableEntityException('Artist not found');
     }
     FavoritesService.favorites.artists.push(id);
     return id;
   }
+
   async deleteTrack(id: string) {
     if (!valid(id)) {
       throw new BadRequestException("Track id isn't valid");

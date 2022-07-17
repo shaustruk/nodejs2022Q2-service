@@ -17,6 +17,7 @@ export class TrackService {
     @Inject(forwardRef(() => FavoritesService))
     private favService: FavoritesService,
   ) {}
+
   private static tracks: Track[] = [];
 
   async findAll(): Promise<Track[]> {
@@ -57,9 +58,13 @@ export class TrackService {
     if (index === -1) {
       throw new NotFoundException('Track not found');
     }
+
     TrackService.tracks.splice(index, 1);
-    const favorites = this.favService.findAll();
-    const favTracks = (await favorites).tracks;
+
+    //get all favorites tracks
+    const favorites = await this.favService.findAll();
+    const favTracks = favorites.tracks;
+    console.log(favTracks);
     const track = favTracks.find((el) => {
       el.id === id;
     });

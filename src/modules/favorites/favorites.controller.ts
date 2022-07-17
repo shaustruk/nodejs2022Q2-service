@@ -24,20 +24,20 @@ export class FavoritesController {
 
   @Post('track/:id')
   @HttpCode(201)
-  async createTrack(@Param('id') id: string) {
-    return await this.favoritesService.createTrack(id);
+  async addIdTrack(@Param('id') id: string) {
+    return await this.favoritesService.addIdTrack(id);
   }
 
   @Post('album/:id')
   @HttpCode(201)
-  async createAlbum(@Param('id') id: string) {
-    return await this.favoritesService.createAlbum(id);
+  async addIdAlbum(@Param('id') id: string) {
+    return await this.favoritesService.addIdAlbum(id);
   }
 
   @Post('artist/:id')
   @HttpCode(201)
-  async createArtist(@Param('id') id: string) {
-    return await this.favoritesService.createArtist(id);
+  async addIdArtist(@Param('id') id: string) {
+    return await this.favoritesService.addIdArtist(id);
   }
 
   @Delete('track/:id')
