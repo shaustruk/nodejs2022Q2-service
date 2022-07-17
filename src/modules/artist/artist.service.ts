@@ -11,6 +11,7 @@ import { AlbumService } from '../album/album.service';
 import { TrackService } from '../track/track.service';
 import { CreteArtistDTO } from './dto/create-artist.dto';
 import { UpdateArtistDto } from './dto/update-artist.dto';
+import { FavoritesService } from '../favorites/favorites.service';
 
 @Injectable()
 export class ArtistService {
@@ -19,6 +20,8 @@ export class ArtistService {
     private albumService: AlbumService,
     @Inject(forwardRef(() => TrackService))
     private trackService: TrackService,
+    @Inject(forwardRef(() => FavoritesService))
+    private favoriteService: FavoritesService,
   ) {}
 
   private static artists: Artist[] = [];

@@ -19,7 +19,6 @@ export class FavoritesService {
   constructor(
     @Inject(forwardRef(() => ArtistService))
     private artistsService: ArtistService,
-
     @Inject(forwardRef(() => AlbumService))
     private albumService: AlbumService,
     @Inject(forwardRef(() => TrackService))
@@ -77,36 +76,41 @@ export class FavoritesService {
     FavoritesService.favorites.artists.push(id);
     return id;
   }
-  //   async delete(id: string) {
-  //     if (!valid(id)) {
-  //       throw new BadRequestException("Favorites id isn't valid");
-  //     }
-  //     const index: number = this.tracks.findIndex((track) => track.id === id);
+  async deleteTrack(id: string) {
+    if (!valid(id)) {
+      throw new BadRequestException("Track id isn't valid");
+    }
+    const index = FavoritesService.favorites.tracks.indexOf(id);
+    // -1 is returned when no findIndex() match is found
+    if (index === -1) {
+      throw new NotFoundException('Favorites not found');
+    }
+    FavoritesService.favorites.tracks.splice(index, 1);
+  }
 
-  //     // -1 is returned when no findIndex() match is found
-  //     if (index === -1) {
-  //       throw new NotFoundException('Favorites not found');
-  //     }
-  //     this.tracks.splice(index, 1);
-  //   }
+  async deleteAlbum(id: string) {
+    if (!valid(id)) {
+      throw new BadRequestException("Album id isn't valid");
+    }
+    const index = FavoritesService.favorites.albums.indexOf(id);
+    // -1 is returned when no findIndex() match is found
+    if (index === -1) {
+      throw new NotFoundException('Album not found');
+    }
+    FavoritesService.favorites.albums.splice(index, 1);
+  }
 
-  //   async update(id: string, updateDTO: UpdateFavoritesDTO) {
-  //     if (!valid(id)) {
-  //       throw new BadRequestException("Favorites id isn't valid");
-  //     }
-  //     const track: Favorites = this.tracks.find((track) => track.id === id);
-  //     // -1 is returned when no findIndex() match is found
-  //     if (!track) {
-  //       throw new NotFoundException('Favorites not found');
-  //     }
-  //     const trackIndex: number = this.tracks.findIndex(
-  //       (track) => track.id === id,
-  //     );
-  //     track.duration = updateDTO.duration;
-
-  //     return track;
-  //   }
-  // }
-  // function uuidValidate(id: string) {
-  //   throw new Error('Function not implemented.');
+  async deleteArtist(id: string) {
+    if (!valid(id)) {
+      throw new BadRequestException("Artist id isn't valid");
+    }
+    const index = FavoritesService.favorites.artists.findIndex(
+      (artistId) => artistId === id,
+    );
+    // -1 is returned when no findIndex() match is found
+    if (index === -1) {
+      throw new NotFoundException('Artist not found');
+    }
+    FavoritesService.favorites.artists.splice(index, 1);
+  }
 }

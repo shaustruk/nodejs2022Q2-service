@@ -10,12 +10,15 @@ import { validate as valid, v4 as uuidv4 } from 'uuid';
 import { CreateAlbumDTO } from './dto/album.dto';
 import { UpdateAlbumDto } from './dto/update-album.dto';
 import { TrackService } from '../track/track.service';
+import { FavoritesService } from '../favorites/favorites.service';
 
 @Injectable()
 export class AlbumService {
   constructor(
     @Inject(forwardRef(() => TrackService))
     private trackService: TrackService,
+    @Inject(forwardRef(() => FavoritesService))
+    private favoritesService: FavoritesService,
   ) {}
 
   private static albums: Album[] = [];
@@ -67,6 +70,12 @@ export class AlbumService {
     if (track) {
       await this.trackService.update(track.id, { albumId: null });
     }
+    const favoritesAlbums = this.favoritesService.findAll(),
+      favAlbums = (await favoritesAlbums).albums,
+      indexDelAlb = favAlbums.findIndex((el) => {
+        el.id === id;
+      });
+    favAlbums.splice(indexDelAlb, 1);
   }
 
   async update(id: string, updateDTO: UpdateAlbumDto) {

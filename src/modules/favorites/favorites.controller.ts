@@ -39,15 +39,22 @@ export class FavoritesController {
   async createArtist(@Param('id') id: string) {
     return await this.favoritesService.createArtist(id);
   }
-  // @Delete(':id')
-  // @HttpCode(204)
-  // async delete(@Param('id') id: string) {
-  //   return await this.favoritesService.delete(id);
-  // }
 
-  // @Put(':id')
-  // @HttpCode(200)
-  // async update(@Param('id') id: string, @Body() updateFavorite: FavoritesDTO) {
-  //   return await this.favoritesService.update(id, updateFavorite);
-  // }
+  @Delete('track/:id')
+  @HttpCode(204)
+  async deleteTrack(@Param('id') id: string) {
+    return await this.favoritesService.deleteTrack(id);
+  }
+
+  @Delete('album/:id')
+  @HttpCode(204)
+  async deleteAlbum(@Param('id') id: string) {
+    return await this.favoritesService.deleteAlbum(id);
+  }
+
+  @Delete('artist/:id')
+  @HttpCode(204)
+  async deleteArtist(@Param('id') id: string) {
+    return await this.favoritesService.deleteArtist(id);
+  }
 }

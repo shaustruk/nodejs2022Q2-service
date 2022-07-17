@@ -1,15 +1,22 @@
 import {
   BadRequestException,
+  forwardRef,
+  Inject,
   Injectable,
   NotFoundException,
 } from '@nestjs/common';
 import { validate as valid, v4 as uuidv4 } from 'uuid';
+import { FavoritesService } from '../favorites/favorites.service';
 import { CreateTrackDTO } from './dto/create-track.dto';
 import { UpdateTracktDto } from './dto/update-track.dto';
 import { Track } from './track.model';
 
 @Injectable()
 export class TrackService {
+  constructor(
+    @Inject(forwardRef(() => FavoritesService))
+    private favService: FavoritesService,
+  ) {}
   private static tracks: Track[] = [];
 
   async findAll(): Promise<Track[]> {
@@ -51,6 +58,14 @@ export class TrackService {
       throw new NotFoundException('Track not found');
     }
     TrackService.tracks.splice(index, 1);
+    const favorites = this.favService.findAll();
+    const favTracks = (await favorites).tracks;
+    const track = favTracks.find((el) => {
+      el.id === id;
+    });
+    if (track) {
+      this.favService.deleteTrack(id);
+    }
   }
 
   async update(id: string, updateDTO: UpdateTracktDto) {
