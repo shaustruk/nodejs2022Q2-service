@@ -11,6 +11,9 @@ import { validate as valid, v4 as uuidv4 } from 'uuid';
 import { ArtistService } from '../artist/artist.service';
 import { AlbumService } from '../album/album.service';
 import { TrackService } from '../track/track.service';
+import { Artist } from '../artist/artist.model';
+import { Track } from '../track/track.model';
+import { Album } from '../album/album.model';
 
 @Injectable()
 export class FavoritesService {
@@ -35,7 +38,11 @@ export class FavoritesService {
     tracks: [],
   };
   async findAll(): Promise<EntityFavorites> {
-    return FavoritesService.favoritesShow;
+    const artists: Artist[] = FavoritesService.favoritesShow.artists;
+    const tracks: Track[] = FavoritesService.favoritesShow.tracks;
+    const albums: Album[] = FavoritesService.favoritesShow.albums;
+    console.log({ artists, tracks, albums }, FavoritesService.favorites);
+    return { artists, albums, tracks };
   }
 
   async addIdTrack(id: string) {
@@ -131,5 +138,12 @@ export class FavoritesService {
     FavoritesService.favoritesShow.artists.splice(index, 1);
     FavoritesService.favorites.artists =
       FavoritesService.favorites.artists.filter((el) => el !== id);
+  }
+
+  async delFavTracks(id: string) {
+    return (FavoritesService.favoritesShow.tracks =
+      FavoritesService.favoritesShow.tracks.filter((track: Track) => {
+        track.id !== id;
+      }));
   }
 }

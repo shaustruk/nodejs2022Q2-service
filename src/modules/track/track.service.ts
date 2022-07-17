@@ -67,7 +67,8 @@ export class TrackService {
       tr.id === id;
     });
     if (track) {
-      this.favService.deleteTrack(id);
+      // this.favService.deleteTrack(id);
+      this.favService.delFavTracks(id);
     }
   }
 
