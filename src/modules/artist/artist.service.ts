@@ -63,24 +63,24 @@ export class ArtistService {
     );
 
     // -1 is returned when no findIndex() match is found
-    if (index === -1) {
-      throw new NotFoundException('Artist not found');
-    }
-    ArtistService.artists.splice(index, 1);
+    if (index !== -1) {
+      //del artist from favArtists
+      // const favorite = (await this.favoriteService.findAll()).artists.find(
+      //   (el) => {
+      //     el.id === id;
+      //   },
+      // );
+      // if (favorite) {
+      this.favoriteService.deleteArtist(id);
+      // }
 
-    //del artist from favArtists
-    const favoritesArtist = await this.favoriteService.findAll(),
-      favArtist = (await favoritesArtist).artists,
-      indexDelArt = favArtist.findIndex((el) => {
-        el.id === id;
-      });
-    favArtist.splice(indexDelArt, 1);
+      //del artistId from tracks=> null
+      this.trackService.setArtistIDisNull(id);
 
-    //del artistId from tracks=> null
-    this.trackService.setArtistIDisNull(id);
-
-    //del artistId from tracks=> null
-    this.trackService.setAlbumIDisNull(id);
+      //del artistId from tracks=> null
+      this.trackService.setAlbumIDisNull(id);
+      ArtistService.artists.splice(index, 1);
+    } else throw new NotFoundException('Artist not found');
   }
 
   async update(id: string, updateDTO: UpdateArtistDto) {

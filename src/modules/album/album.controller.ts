@@ -19,31 +19,34 @@ export class AlbumController {
 
   @Get()
   @HttpCode(200)
-  async findAll(): Promise<Album[]> {
-    return await this.albumService.findAll();
+  findAll(): Promise<Album[]> {
+    return this.albumService.findAll();
   }
 
   @Get(':id')
   @HttpCode(200)
-  async findOne(@Param('id') id: string): Promise<Album> {
-    return await this.albumService.findOne(id);
+  findOne(@Param('id') id: string): Promise<Album> {
+    return this.albumService.findOne(id);
   }
 
   @Post()
   @HttpCode(201)
-  async create(@Body() createalbum: CreateAlbumDTO): Promise<Album> {
-    return await this.albumService.create(createalbum);
+  create(@Body() createalbum: CreateAlbumDTO): Promise<Album> {
+    return this.albumService.create(createalbum);
   }
 
   @Delete(':id')
   @HttpCode(204)
-  async delete(@Param('id') id: string) {
-    return await this.albumService.delete(id);
+  delete(@Param('id') id: string) {
+    return this.albumService.delete(id);
   }
 
   @Put(':id')
   @HttpCode(200)
-  async update(@Param('id') id: string, @Body() updatealbum: UpdateAlbumDto) {
-    return await this.albumService.update(id, updatealbum);
+  update(
+    @Param('id') id: string,
+    @Body() updatealbum: UpdateAlbumDto,
+  ): Promise<Album> {
+    return this.albumService.update(id, updatealbum);
   }
 }

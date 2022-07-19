@@ -55,24 +55,21 @@ export class TrackService {
     );
 
     // -1 is returned when no findIndex() match is found
-    if (index === -1) {
-      throw new NotFoundException('Track not found');
-    }
-
-    TrackService.tracks.splice(index, 1);
-
-    //get all favorites tracks
-    const favoritesTracks = (await this.favService.findAll()).tracks;
-    const track = favoritesTracks.find((tr) => {
-      tr.id === id;
-    });
-    if (track) {
+    if (index !== -1) {
+      //get all favorites tracks
+      const favoritesTracks = (await this.favService.findAll()).tracks;
+      const track = favoritesTracks.find((tr) => {
+        tr.id === id;
+      });
+      // if (track) {
       // this.favService.deleteTrack(id);
-      this.favService.delFavTracks(id);
-    }
+      this.favService.deleteTrack(id);
+      // }
+      TrackService.tracks.splice(index, 1);
+    } else throw new NotFoundException('Track not found');
   }
 
-  async update(id: string, updateDTO: UpdateTracktDto) {
+  async update(id: string, updateDTO: UpdateTracktDto): Promise<Track> {
     if (!valid(id)) {
       throw new BadRequestException("Track id isn't valid");
     }

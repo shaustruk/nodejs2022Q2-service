@@ -33,25 +33,26 @@ After application running open new terminal and enter:
 
 #### To run all tests without authorization
 
-
 #### npm run test
-
 
 #### To run only one of all test suites
 
 ```
 npm run test -- favorites.e2e-spec.ts
 ```
+
 ```
 npm run test -- users.e2e-spec.ts
 ```
+
 ```
 npm run test -- artists.e2e-spec.ts
 ```
+
 ```
 npm run test -- albums.e2e-spec.ts
 ```
+
 ```
 npm run test -- tracks.e2e-spec.ts
 ```
-

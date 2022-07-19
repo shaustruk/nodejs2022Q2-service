@@ -4,6 +4,7 @@ import {
   Delete,
   Get,
   HttpCode,
+  HttpStatus,
   Param,
   Post,
   Put,
@@ -19,31 +20,31 @@ export class ArtistController {
 
   @Get()
   @HttpCode(200)
-  async findAll(): Promise<Artist[]> {
-    return await this.artistService.findAll();
+  findAll(): Promise<Artist[]> {
+    return this.artistService.findAll();
   }
 
   @Get(':id')
   @HttpCode(200)
-  async findOne(@Param('id') id: string): Promise<Artist> {
-    return await this.artistService.findOne(id);
+  findOne(@Param('id') id: string): Promise<Artist> {
+    return this.artistService.findOne(id);
   }
 
   @Post()
   @HttpCode(201)
-  async create(@Body() createArtist: CreteArtistDTO): Promise<Artist> {
-    return await this.artistService.create(createArtist);
+  create(@Body() createArtist: CreteArtistDTO): Promise<Artist> {
+    return this.artistService.create(createArtist);
   }
 
   @Delete(':id')
   @HttpCode(204)
-  async delete(@Param('id') id: string) {
-    return await this.artistService.delete(id);
+  delete(@Param('id') id: string) {
+    return this.artistService.delete(id);
   }
 
   @Put(':id')
   @HttpCode(200)
-  async update(@Param('id') id: string, @Body() updateArtist: UpdateArtistDto) {
-    return await this.artistService.update(id, updateArtist);
+  update(@Param('id') id: string, @Body() updateArtist: UpdateArtistDto) {
+    return this.artistService.update(id, updateArtist);
   }
 }

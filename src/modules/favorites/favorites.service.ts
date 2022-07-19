@@ -32,16 +32,23 @@ export class FavoritesService {
     tracks: [],
   };
 
-  private static favoritesShow: EntityFavorites = {
-    artists: [],
-    albums: [],
-    tracks: [],
-  };
   async findAll(): Promise<EntityFavorites> {
-    const artists: Artist[] = FavoritesService.favoritesShow.artists;
-    const tracks: Track[] = FavoritesService.favoritesShow.tracks;
-    const albums: Album[] = FavoritesService.favoritesShow.albums;
-    console.log({ artists, tracks, albums }, FavoritesService.favorites);
+    const tracks: Track[] = await Promise.all(
+      FavoritesService.favorites.tracks.map((trackId) =>
+        this.trackService.findOne(trackId),
+      ),
+    );
+
+    const albums: Album[] = await Promise.all(
+      FavoritesService.favorites.albums.map((albumId) =>
+        this.albumService.findOne(albumId),
+      ),
+    );
+    const artists: Artist[] = await Promise.all(
+      FavoritesService.favorites.artists.map((artistId) =>
+        this.artistsService.findOne(artistId),
+      ),
+    );
     return { artists, albums, tracks };
   }
 
@@ -55,7 +62,7 @@ export class FavoritesService {
       throw new UnprocessableEntityException('Track not found');
     }
     FavoritesService.favorites.tracks.push(id);
-    FavoritesService.favoritesShow.tracks.push(track);
+
     console.log(FavoritesService.favorites.tracks);
     return id;
   }
@@ -70,7 +77,7 @@ export class FavoritesService {
       throw new UnprocessableEntityException('Album not found');
     }
     FavoritesService.favorites.albums.push(id);
-    FavoritesService.favoritesShow.albums.push(album);
+
     console.log(FavoritesService.favorites.albums);
     return id;
   }
@@ -85,65 +92,32 @@ export class FavoritesService {
       throw new UnprocessableEntityException('Artist not found');
     }
     FavoritesService.favorites.artists.push(id);
-    FavoritesService.favoritesShow.artists.push(artist);
+
     console.log(FavoritesService.favorites.artists);
     return id;
   }
 
-  async deleteTrack(id: string) {
-    if (!valid(id)) {
-      throw new BadRequestException("Track id isn't valid");
-    }
-    let index = FavoritesService.favoritesShow.tracks.findIndex(
-      (el) => el.id === id,
-    );
-
-    // -1 is returned when no findIndex() match is found
-    if (!index) {
-      throw new NotFoundException('Favorites not found');
-    }
-    FavoritesService.favoritesShow.tracks.splice(index, 1);
+  async deleteTrack(id: string): Promise<void> {
     FavoritesService.favorites.tracks =
-      FavoritesService.favorites.tracks.filter((el) => el !== id);
-    console.log(FavoritesService.favorites);
+      FavoritesService.favorites.tracks.filter((el) => {
+        el !== id;
+      });
+    console.log(FavoritesService.favorites.tracks, ' tracks');
   }
 
-  async deleteAlbum(id: string) {
-    if (!valid(id)) {
-      throw new BadRequestException("Album id isn't valid");
-    }
-    let index = FavoritesService.favoritesShow.albums.findIndex(
-      (el) => el.id === id,
-    );
-    // -1 is returned when no findIndex() match is found
-    if (index === -1) {
-      throw new NotFoundException('Album not found');
-    }
-    FavoritesService.favoritesShow.albums.splice(index, 1);
+  async deleteAlbum(id: string): Promise<void> {
     FavoritesService.favorites.albums =
-      FavoritesService.favorites.albums.filter((el) => el !== id);
+      FavoritesService.favorites.albums.filter((el) => {
+        el !== id;
+      });
+    console.log(FavoritesService.favorites.tracks, 'album');
   }
 
   async deleteArtist(id: string) {
-    if (!valid(id)) {
-      throw new BadRequestException("Artist id isn't valid");
-    }
-    let index = FavoritesService.favoritesShow.artists.findIndex(
-      (el) => el.id === id,
-    );
-    // -1 is returned when no findIndex() match is found
-    if (index === -1) {
-      throw new NotFoundException('Artist not found');
-    }
-    FavoritesService.favoritesShow.artists.splice(index, 1);
     FavoritesService.favorites.artists =
-      FavoritesService.favorites.artists.filter((el) => el !== id);
-  }
-
-  async delFavTracks(id: string) {
-    return (FavoritesService.favoritesShow.tracks =
-      FavoritesService.favoritesShow.tracks.filter((track: Track) => {
-        track.id !== id;
-      }));
+      FavoritesService.favorites.artists.filter((el) => {
+        el !== id;
+      });
+    console.log(FavoritesService.favorites.tracks, 'artist');
   }
 }

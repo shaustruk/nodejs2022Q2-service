@@ -19,31 +19,34 @@ export class TrackController {
 
   @Get()
   @HttpCode(200)
-  async findAll(): Promise<Track[]> {
-    return await this.trackService.findAll();
+  findAll(): Promise<Track[]> {
+    return this.trackService.findAll();
   }
 
   @Get(':id')
   @HttpCode(200)
-  async findOne(@Param('id') id: string): Promise<Track> {
-    return await this.trackService.findOne(id);
+  findOne(@Param('id') id: string): Promise<Track> {
+    return this.trackService.findOne(id);
   }
 
   @Post()
   @HttpCode(201)
-  async create(@Body() createTrack: CreateTrackDTO): Promise<Track> {
-    return await this.trackService.create(createTrack);
+  create(@Body() createTrack: CreateTrackDTO): Promise<Track> {
+    return this.trackService.create(createTrack);
   }
 
   @Delete(':id')
   @HttpCode(204)
-  async delete(@Param('id') id: string) {
-    return await this.trackService.delete(id);
+  delete(@Param('id') id: string) {
+    return this.trackService.delete(id);
   }
 
   @Put(':id')
   @HttpCode(200)
-  async update(@Param('id') id: string, @Body() updateTrack: UpdateTracktDto) {
-    return await this.trackService.update(id, updateTrack);
+  update(
+    @Param('id') id: string,
+    @Body() updateTrack: UpdateTracktDto,
+  ): Promise<Track> {
+    return this.trackService.update(id, updateTrack);
   }
 }

@@ -58,24 +58,23 @@ export class AlbumService {
     );
 
     // -1 is returned when no findIndex() match is found
-    if (index === -1) {
-      throw new NotFoundException('Album not found');
-    }
-    AlbumService.albums.splice(index, 1);
-
+    if (index !== -1) {
+      // const favorite = (await this.favoritesService.findAll()).albums.find(
+      //   (el) => {
+      //     el.id === id;
+      //   },
+      // );
+      // if (favorite) {
+      this.favoritesService.deleteAlbum(id);
+      // }
+      //del almId from tracks
+      this.trackService.setAlbumIDisNull(id);
+      AlbumService.albums.splice(index, 1);
+    } else throw new NotFoundException('Album not found');
     //del album from favAlbums
-    const favoritesAlbums = this.favoritesService.findAll(),
-      favAlbums = (await favoritesAlbums).albums,
-      indexDelAlb = favAlbums.findIndex((el) => {
-        el.id === id;
-      });
-    favAlbums.splice(indexDelAlb, 1);
-
-    //del almId from tracks
-    this.trackService.setAlbumIDisNull(id);
   }
 
-  async update(id: string, updateDTO: UpdateAlbumDto) {
+  async update(id: string, updateDTO: UpdateAlbumDto): Promise<Album> {
     if (!valid(id)) {
       throw new BadRequestException("Album id isn't valid");
     }
