@@ -56,3 +56,15 @@ npm run test -- albums.e2e-spec.ts
 ```
 npm run test -- tracks.e2e-spec.ts
 ```
+
+//
+
+#### Docker command
+
+```
+docker build -t docker-task .
+```
+
+```
+docker run -p 4000:4000 docker-task
+```

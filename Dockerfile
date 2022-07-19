@@ -1,8 +1,8 @@
 # Base image
-FROM node:18
+FROM node:18-alpine As development
 
 # Create app directory
-WORKDIR /usr/src/app
+WORKDIR /app
 
 # A wildcard is used to ensure both package.json AND package-lock.json are copied
 COPY package*.json ./
@@ -16,5 +16,9 @@ COPY . .
 # Creates a "dist" folder with the production build
 RUN npm run build
 
+EXPOSE 4000
+
+ENV PORT=4000
+
 # Start the server using the production build
-CMD [ "node", "dist/main.js" ]
+CMD [ "npm", "run","start:dev" ]

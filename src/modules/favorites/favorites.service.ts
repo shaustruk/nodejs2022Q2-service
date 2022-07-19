@@ -62,7 +62,6 @@ export class FavoritesService {
     }
     FavoritesService.favorites.tracks.push(id);
 
-    console.log(FavoritesService.favorites.tracks);
     return id;
   }
 
@@ -77,7 +76,6 @@ export class FavoritesService {
     }
     FavoritesService.favorites.albums.push(id);
 
-    console.log(FavoritesService.favorites.albums);
     return id;
   }
 
@@ -91,8 +89,6 @@ export class FavoritesService {
       throw new UnprocessableEntityException('Artist not found');
     }
     FavoritesService.favorites.artists.push(id);
-
-    console.log(FavoritesService.favorites.artists);
     return id;
   }
 
@@ -101,7 +97,6 @@ export class FavoritesService {
       FavoritesService.favorites.tracks.filter((el) => {
         el !== id;
       });
-    console.log(FavoritesService.favorites.tracks, ' tracks');
   }
 
   async deleteAlbum(id: string): Promise<void> {
@@ -109,7 +104,6 @@ export class FavoritesService {
       FavoritesService.favorites.albums.filter((el) => {
         el !== id;
       });
-    console.log(FavoritesService.favorites.tracks, 'album');
   }
 
   async deleteArtist(id: string) {
@@ -117,6 +111,5 @@ export class FavoritesService {
       FavoritesService.favorites.artists.filter((el) => {
         el !== id;
       });
-    console.log(FavoritesService.favorites.tracks, 'artist');
   }
 }
