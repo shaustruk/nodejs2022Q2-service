@@ -57,12 +57,6 @@ export class TrackService {
     // -1 is returned when no findIndex() match is found
     if (index !== -1) {
       //get all favorites tracks
-      const favoritesTracks = (await this.favService.findAll()).tracks;
-      const track = favoritesTracks.find((tr) => {
-        tr.id === id;
-      });
-      // if (track) {
-      // this.favService.deleteTrack(id);
       this.favService.deleteTrack(id);
       // }
       TrackService.tracks.splice(index, 1);

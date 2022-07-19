@@ -3,11 +3,10 @@ import {
   forwardRef,
   Inject,
   Injectable,
-  NotFoundException,
   UnprocessableEntityException,
 } from '@nestjs/common';
 import { EntityFavorites, Favorites } from './favorites.model';
-import { validate as valid, v4 as uuidv4 } from 'uuid';
+import { validate as valid } from 'uuid';
 import { ArtistService } from '../artist/artist.service';
 import { AlbumService } from '../album/album.service';
 import { TrackService } from '../track/track.service';

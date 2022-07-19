@@ -1,16 +1,13 @@
 import {
-  Body,
   Controller,
   Delete,
   Get,
   HttpCode,
-  HttpStatus,
   Param,
   ParseUUIDPipe,
   Post,
-  Put,
 } from '@nestjs/common';
-import { EntityFavorites, Favorites } from './favorites.model';
+import { EntityFavorites } from './favorites.model';
 import { FavoritesService } from './favorites.service';
 
 @Controller('favs')

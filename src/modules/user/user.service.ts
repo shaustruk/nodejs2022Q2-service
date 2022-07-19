@@ -68,7 +68,7 @@ export class UserService {
     if (!uuidValidate(id)) {
       throw new BadRequestException("User id isn't valid");
     }
-    const user: User = UserService.users.find((user, i) => user.id === id);
+    const user: User = UserService.users.find((user) => user.id === id);
     // -1 is returned when no findIndex() match is found
     if (!user) {
       throw new NotFoundException('User not found');

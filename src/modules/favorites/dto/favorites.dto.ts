@@ -1,4 +1,4 @@
-import { IsArray, IsBoolean, IsNotEmpty } from 'class-validator';
+import { IsArray, IsNotEmpty } from 'class-validator';
 
 export class FavoritesDTO {
   @IsNotEmpty()
