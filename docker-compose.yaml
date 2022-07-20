@@ -1,1 +1,43 @@
-FROM node:18
+version: '3.8'
+
+volumes:
+  pgdb:
+networks:
+  app-network:
+    name: custom-network
+    driver: bridge
+
+services:
+  api:
+    build:
+      dockerfile: Dockerfile
+      context: .
+      target: development
+    volumes:
+      - .:/app
+      - ./app/node_modules
+    container_name: home-library
+    env_file:
+      - .env
+    command: npm run start:dev
+    ports:
+      - ${PORT}:${PORT}
+    restart: always
+    networks:
+      - app-network
+    depends_on:
+      - postgres
+  
+  postgres:
+    build: ./src/db/
+    restart: always
+    ports: 
+      - ${POSTGRES_PORT}:${POSTGRES_PORT}
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+      POSTGRES_DB: ${POSTGRES_DB}
+    networks:
+      - app-network
+    volumes:
+      - pgdb:/src/db/
