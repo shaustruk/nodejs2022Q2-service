@@ -32,15 +32,15 @@ npm run docker build
 npm run docker:stop_app
 ```
 ```
-docker:start_app
+npm run docker:start_app
 ```
 ### stop / start postgress-container
 
 ```
-docker:stop_pg
+npm run docker:stop_pg
 ```
 ```
-docker:start_pg
+npm run docker:start_pg
 ```
 ## Testing
 
