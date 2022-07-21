@@ -1,0 +1,53 @@
+version: '3.8'
+
+volumes:
+  docker-nest-postgres:
+networks:
+  app-network:
+    name: app-network
+    driver: bridge
+
+
+services:
+  api:
+    container_name: app-container
+    image: app-image
+    build:
+      dockerfile: Dockerfile
+      context: .
+      target: development
+    restart: always
+    volumes:
+      - .:/usr/src/app
+      - /usr/src/app/node_modules
+  
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+      POSTGRES_DB: ${POSTGRES_DB}
+    command: npm run start:dev
+    ports:
+      - ${PORT}:${PORT}
+  
+    networks:
+      - app-network
+    depends_on:
+      - postgres
+  
+  postgres:
+    container_name: postgres-container
+    image: postgres-image
+    build: 
+      dockerfile: ./postgress/dockerfile
+      context: .
+    restart: always
+    ports: 
+      - ${POSTGRES_PORT}:${POSTGRES_PORT}
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+      POSTGRES_DB: ${POSTGRES_DB}
+    networks:
+      - app-network
+    volumes:
+      - docker-nest-postgres:/var/lib/postgresql/data
