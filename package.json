@@ -24,7 +24,7 @@
     "docker:start_app": "docker start app-container",
     "docker:start_pg":"docker start postgres-container",
     "docker:stop_pg":"docker start postgres-container",
-    "scan":"docker scan app-container"
+    "scan":"docker scan app-image"
   },
   "dependencies": {
     "@nestjs/common": "^8.0.0",
