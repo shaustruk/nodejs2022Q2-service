@@ -26,8 +26,8 @@ npm install
 ```
 npm run docker build
 ```
-```
 ### stop / start app-container
+
 ```
 npm run docker:stop_app
 ```
@@ -35,6 +35,7 @@ npm run docker:stop_app
 docker:start_app
 ```
 ### stop / start postgress-container
+
 ```
 docker:stop_pg
 ```
