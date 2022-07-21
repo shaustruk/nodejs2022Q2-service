@@ -18,7 +18,13 @@
     "test:auth": "cross-env TEST_MODE=auth jest --config ./test/jest-e2e.json",
     "test:watch": "jest --watch",
     "test:cov": "jest --coverage",
-    "test:debug": "node --inspect-brk -r tsconfig-paths/register -r ts-node/register node_modules/.bin/jest --runInBand"
+    "test:debug": "node --inspect-brk -r tsconfig-paths/register -r ts-node/register node_modules/.bin/jest --runInBand",
+    "docker:build":"docker-compose up -d --build",
+    "docker:stop_app": "docker stop app-container",
+    "docker:start_app": "docker start app-container",
+    "docker:start_pg":"docker start postgres-container",
+    "docker:stop_pg":"docker start postgres-container",
+    "scan":"docker scan app-container"
   },
   "dependencies": {
     "@nestjs/common": "^8.0.0",
