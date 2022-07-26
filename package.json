@@ -24,7 +24,8 @@
     "docker:start_app": "docker start app-container",
     "docker:start_pg": "docker start postgres-container",
     "docker:stop_pg": "docker start postgres-container",
-    "scan": "docker scan app-image"
+    "scan": "docker scan app-image",
+    "prisma:generate": "npx prisma generate"
   },
   "dependencies": {
     "@nestjs/common": "^8.0.0",
@@ -33,6 +34,7 @@
     "@nestjs/mapped-types": "^1.0.1",
     "@nestjs/platform-express": "^8.0.0",
     "@nestjs/swagger": "^5.2.1",
+    "@prisma/client": "^4.1.0",
     "bcrypt": "^5.0.1",
     "class-transformer": "^0.5.1",
     "class-validator": "^0.13.2",
