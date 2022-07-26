@@ -16,19 +16,15 @@ services:
       dockerfile: Dockerfile
       context: .
       target: development
-    restart: always
+    restart: unless-stopped
     volumes:
       - .:/usr/src/app
       - /usr/src/app/node_modules
-  
     environment:
-      POSTGRES_USER: ${POSTGRES_USER}
-      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
-      POSTGRES_DB: ${POSTGRES_DB}
+      DATABASE_URL: ${DATABASE_URL_POSTGRES}
     command: npm run start:dev
     ports:
       - ${PORT}:${PORT}
-  
     networks:
       - app-network
     depends_on:
@@ -38,9 +34,9 @@ services:
     container_name: postgres-container
     image: postgres-image
     build: 
-      dockerfile: ./postgress/dockerfile
+      dockerfile: ./postgress/Dockerfile
       context: .
-    restart: always
+    restart: unless-stopped
     ports: 
       - ${POSTGRES_PORT}:${POSTGRES_PORT}
     environment:

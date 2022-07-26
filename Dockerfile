@@ -2,7 +2,7 @@
 # BUILD FOR LOCAL DEVELOPMENT
 ###################
 
-FROM node:18-alpine As development
+FROM node:lts-alpine As development
 
 # Create app directory
 WORKDIR /usr/src/app
@@ -20,6 +20,10 @@ RUN npm ci
 COPY --chown=node:node . .
 
 EXPOSE 4000
+
+# # Generate Prisma database client code
+# RUN npm run prisma:generate
+
 # Use the node user from the image (instead of the root user)
 USER node
 
