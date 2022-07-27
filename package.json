@@ -74,6 +74,14 @@
     "tsconfig-paths": "^3.10.1",
     "typescript": "^4.3.5"
   },
+  "build": {
+    "files": [
+      {
+        "from": "node_modules/.prisma/client/",
+        "to": "node_modules/.prisma/client/"
+      }
+    ]
+  },
   "jest": {
     "moduleFileExtensions": [
       "js",
