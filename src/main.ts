@@ -6,7 +6,7 @@ import { parse } from 'yaml';
 import { readFile } from 'fs/promises';
 import 'dotenv/config';
 import { ValidationPipe } from '@nestjs/common';
-import { PrismaService } from './prisma/prisma.service';
+// import { PrismaService } from './prisma/prisma.service';
 
 const URL = process.env.PORT;
 async function bootstrap() {
@@ -22,8 +22,8 @@ async function bootstrap() {
       forbidNonWhitelisted: true,
     }),
   );
-  const prismaService = app.get(PrismaService);
-  await prismaService.enableShutdownHooks(app);
+  // const prismaService = app.get(PrismaService);
+  // await prismaService.enableShutdownHooks(app);
 
   await app.listen(URL);
 }
