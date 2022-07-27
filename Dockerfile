@@ -2,7 +2,7 @@
 # BUILD FOR LOCAL DEVELOPMENT
 ###################
 
-FROM node:18-alpine As development
+FROM node:lts-alpine As development
 
 # Create app directory
 WORKDIR /usr/src/app
@@ -11,7 +11,7 @@ WORKDIR /usr/src/app
 # A wildcard is used to ensure copying both package.json AND package-lock.json (when available).
 # Copying this first prevents re-running npm install on every code change.
 COPY --chown=node:node package*.json ./
-
+COPY ./prisma prisma
 
 # Install app dependencies using the `npm ci` command instead of `npm install`
 RUN npm ci
@@ -27,9 +27,9 @@ USER node
 # BUILD FOR PRODUCTION
 ###################
 
-FROM node:18-alpine As build
+FROM node:lts-alpine As build
 
-WORKDIR /usr/src/app
+WORKDIR /app
 
 COPY --chown=node:node package*.json ./
 
@@ -59,9 +59,10 @@ USER node
 # PRODUCTION
 ###################
 
-FROM node:18-alpine As production
+FROM node:lts-alpine As production
 
 # Copy the bundled code from the build stage to the production image
+COPY --chown=node:node --from=builder /usr/src/app/prisma /usr/src/app/prisma
 COPY --chown=node:node --from=build /usr/src/app/node_modules ./node_modules
 COPY --chown=node:node --from=build /usr/src/app/dist ./dist
 

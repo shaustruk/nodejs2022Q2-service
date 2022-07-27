@@ -1,0 +1,60 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id        String   @id @default(uuid())
+  login     String
+  password  String
+  version   Int?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model Artist {
+  id         String    @id @default(uuid())
+  name       String
+  grammy     Boolean   @default(false)
+  album      Album?    @relation(fields: [albumId], references: [id])
+  albumId    String? // relation scalar field  (used in the `@relation` attribute above) @unique
+  track      Track?    @relation(fields: [trackId], references: [id])
+  trackId    String? // relation scalar field  (used in the `@relation` attribute above)
+  favorite   Favorite? @relation(fields: [favoriteId], references: [id])
+  favoriteId String? // relation scalar field  (used in the `@relation` attribute above)
+}
+
+model Album {
+  id         String   @id @default(uuid())
+  name       String
+  year       Int
+  artistId   Artist[]
+  track      Track    @relation(fields: [trackId], references: [id])
+  trackId    String // relation scalar field  (used in the `@relation` attribute above) //что это? кпипаст из примера, не удалила, сори  оки
+  favorite   Favorite @relation(fields: [favoriteId], references: [id])
+  favoriteId String // relation scalar field  (used in the `@relation` attribute above)
+}
+
+model Track {
+  id         String    @id @default(uuid())
+  name       String
+  artistId   Artist[]
+  albumId    Album[]
+  duration   Int
+  Favorite   Favorite? @relation(fields: [favoriteId], references: [id])
+  favoriteId String?
+}
+
+model Favorite {
+  id      String   @id @default(uuid())
+  artists Artist[]
+  albums  Album[]
+  tracks  Track[]
+}
