@@ -5,12 +5,12 @@ import {
   Get,
   HttpCode,
   Param,
+  ParseUUIDPipe,
   Post,
   Put,
 } from '@nestjs/common';
-import { Artist } from './artist.model';
+import { Artist } from '@prisma/client';
 import { ArtistService } from './artist.service';
-import { CreteArtistDTO } from './dto/create-artist.dto';
 import { UpdateArtistDto } from './dto/update-artist.dto';
 
 @Controller('artist')
@@ -25,25 +25,35 @@ export class ArtistController {
 
   @Get(':id')
   @HttpCode(200)
-  findOne(@Param('id') id: string): Promise<Artist> {
+  findOne(@Param('id', new ParseUUIDPipe()) id: string): Promise<Artist> {
     return this.artistService.findOne(id);
   }
 
   @Post()
   @HttpCode(201)
-  create(@Body() createArtist: CreteArtistDTO): Promise<Artist> {
-    return this.artistService.create(createArtist);
+  create(
+    @Body()
+    data: {
+      name: string;
+      grammy: boolean;
+    },
+  ): Promise<Artist> {
+    const { name, grammy } = data;
+    return this.artistService.create({ name, grammy });
   }
 
   @Delete(':id')
   @HttpCode(204)
-  delete(@Param('id') id: string) {
+  delete(@Param('id', new ParseUUIDPipe()) id: string) {
     return this.artistService.delete(id);
   }
-
   @Put(':id')
   @HttpCode(200)
-  update(@Param('id') id: string, @Body() updateArtist: UpdateArtistDto) {
-    return this.artistService.update(id, updateArtist);
+  update(
+    @Param('id', new ParseUUIDPipe()) id: string,
+    @Body()
+    dataUpdate: UpdateArtistDto,
+  ): Promise<Artist> {
+    return this.artistService.update(id, dataUpdate);
   }
 }

@@ -5,12 +5,11 @@ import {
   Get,
   HttpCode,
   Param,
+  ParseUUIDPipe,
   Post,
   Put,
 } from '@nestjs/common';
-import { CreateTrackDTO } from './dto/create-track.dto';
-import { UpdateTracktDto } from './dto/update-track.dto';
-import { Track } from './track.model';
+import { Prisma, Track } from '@prisma/client';
 import { TrackService } from './track.service';
 
 @Controller('track')
@@ -31,7 +30,7 @@ export class TrackController {
 
   @Post()
   @HttpCode(201)
-  create(@Body() createTrack: CreateTrackDTO): Promise<Track> {
+  create(@Body() createTrack: Prisma.TrackCreateInput): Promise<Track> {
     return this.trackService.create(createTrack);
   }
 
@@ -44,9 +43,13 @@ export class TrackController {
   @Put(':id')
   @HttpCode(200)
   update(
-    @Param('id') id: string,
-    @Body() updateTrack: UpdateTracktDto,
+    @Param('id', new ParseUUIDPipe()) id: string,
+    @Body() data: { name: string; duration: number },
   ): Promise<Track> {
-    return this.trackService.update(id, updateTrack);
+    const { name, duration } = data;
+    return this.trackService.update({
+      where: { id },
+      data: { name, duration },
+    });
   }
 }

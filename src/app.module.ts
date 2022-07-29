@@ -3,7 +3,7 @@ import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { AlbumModule } from './modules/album/album.module';
 import { ArtistModule } from './modules/artist/artist.module';
-import { FavoritesModule } from './modules/favorites/favorites.module';
+// import { FavoritesModule } from './modules/favorites/favorites.module';
 import { TrackModule } from './modules/track/track.module';
 import { UserModule } from './modules/user/user.module';
 import { PrismaModule } from './prisma/prisma.module';
@@ -14,7 +14,7 @@ import { PrismaModule } from './prisma/prisma.module';
     ArtistModule,
     AlbumModule,
     TrackModule,
-    FavoritesModule,
+    // FavoritesModule,
     PrismaModule,
   ],
   controllers: [AppController],

@@ -28,7 +28,7 @@ model Artist {
   track      Track?    @relation(fields: [trackId], references: [id])
   trackId    String? // relation scalar field  (used in the `@relation` attribute above)
   favorite   Favorite? @relation(fields: [favoriteId], references: [id])
-  favoriteId String? // relation scalar field  (used in the `@relation` attribute above)
+  favoriteId String? // relation scalar field  (used in the `@relation` 
 }
 
 model Album {
@@ -37,7 +37,7 @@ model Album {
   year       Int
   artistId   Artist[]
   track      Track    @relation(fields: [trackId], references: [id])
-  trackId    String // relation scalar field  (used in the `@relation` attribute above) //что это? кпипаст из примера, не удалила, сори  оки
+  trackId    String // relation scalar field  (used in the `@relation` attribute above)
   favorite   Favorite @relation(fields: [favoriteId], references: [id])
   favoriteId String // relation scalar field  (used in the `@relation` attribute above)
 }
@@ -53,8 +53,8 @@ model Track {
 }
 
 model Favorite {
-  id      String   @id @default(uuid())
-  artists Artist[]
-  albums  Album[]
-  tracks  Track[]
+  id     String   @id @default(uuid())
+  Artist Artist[]
+  Album  Album[]
+  Track  Track[]
 }

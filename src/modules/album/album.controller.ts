@@ -5,13 +5,12 @@ import {
   Get,
   HttpCode,
   Param,
+  ParseUUIDPipe,
   Post,
   Put,
 } from '@nestjs/common';
-import { Album } from './album.model';
+import { Album, Prisma } from '@prisma/client';
 import { AlbumService } from './album.service';
-import { CreateAlbumDTO } from './dto/album.dto';
-import { UpdateAlbumDto } from './dto/update-album.dto';
 
 @Controller('album')
 export class AlbumController {
@@ -25,28 +24,33 @@ export class AlbumController {
 
   @Get(':id')
   @HttpCode(200)
-  findOne(@Param('id') id: string): Promise<Album> {
+  findOne(@Param('id', new ParseUUIDPipe()) id: string): Promise<Album> {
     return this.albumService.findOne(id);
   }
 
   @Post()
   @HttpCode(201)
-  create(@Body() createalbum: CreateAlbumDTO): Promise<Album> {
-    return this.albumService.create(createalbum);
+  create(@Body() data: Prisma.AlbumCreateInput): Promise<Album> {
+    return this.albumService.create(data);
   }
 
   @Delete(':id')
   @HttpCode(204)
-  delete(@Param('id') id: string) {
+  delete(@Param('id', new ParseUUIDPipe()) id: string) {
     return this.albumService.delete(id);
   }
 
   @Put(':id')
   @HttpCode(200)
   update(
-    @Param('id') id: string,
-    @Body() updatealbum: UpdateAlbumDto,
+    @Param('id', new ParseUUIDPipe()) id: string,
+    @Body() data: { name: string; year: number },
   ): Promise<Album> {
-    return this.albumService.update(id, updatealbum);
+    const { name, year } = data;
+
+    return this.albumService.update({
+      where: { id },
+      data: { name, year },
+    });
   }
 }
