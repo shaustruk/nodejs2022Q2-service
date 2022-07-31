@@ -24,7 +24,7 @@ npm install
 ## Docker command
 
 ```
-npm run docker build
+npm run docker:build
 ```
 ### stop / start app-container
 
